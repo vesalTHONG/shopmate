@@ -12,6 +12,9 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 
+from carts.views import _cart_id
+from carts.models import Cart, CartItem
+import requests
 
 def register(request):
     if request.method == 'POST':
@@ -30,6 +33,7 @@ def register(request):
              # USER ACTIVATION
             current_site = get_current_site(request)
             mail_subject = 'Please activate your account'
+            #Sends out Account Activation email
             message = render_to_string('accounts/account_verification_email.html', {
                 'user': user,
                 'domain': current_site,
@@ -55,9 +59,59 @@ def login(request):
         user = auth.authenticate(email=email, password = password)
 
         if user is not None:
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+                is_cart_item_exists = CartItem.objects.filter(product=product, cart=cart).exists()
+
+                #The function will keep the Items in cart when the user logs into their account
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)
+                    #getting the product variation by cart id
+                    product_variation=[]
+                    for item in cart_item:
+                        variation = item.variations.all()
+                        product_variation.append(list(variation))
+
+                    #get the cart items from the eusers to access their product variations
+                    cart_item = CartItem.objects.filter(user=user)
+                    ex_var_list = []
+                    id = []
+                    for item in cart_item:
+                        existing_variation = item.variations.all()
+                        ex_var_list.append(list(existing_variation))
+                        id.append(item.id)
+
+                    # product_variation =[1,2,3,4,6]
+                    # ex_var_list = [4,6,3,5]
+
+                    for pr in product_variation:
+                        if pr in ex_var_list:
+                            index = ex_var_list.index(pr)
+                            item_id = id[index]
+                            item = CartItem.objects.get(id=item_id)
+                            item.quantity += 1
+                            item.user = user
+                            item.save()
+                        else:
+                            cart_item = CartItem.objects.filter(cart=cart)
+                            for item in cart_item:
+                                item.user = user
+                                item.save()
+
+            except:
+
+                pass
             auth.login(request, user)
-            # messages.success(request, 'You are now logged in.')
-            return redirect('home')
+            messages.success(request, 'You are now logged in.')
+            url = requests.META.get('HTTP_REFERER')
+            try:
+                query = requests.utils.urlparse(url).query
+                params = dict(x.split('=') for x in query.split('&'))
+                if 'next' in params:
+                    nextPage = params['next']
+                    return redirect(nextPage)
+            except:
+                    return redirect('dashboard')
         else:
             messages.error(request, 'Invalid login credentials.')
             return redirect('login')
@@ -106,6 +160,7 @@ def forgotPassword(request):
             user = Account.objects.get(email__exact=email)
             current_site = get_current_site(request)
             mail_subject = 'Reset your password'
+            #Sends out Reset password email
             message = render_to_string('accounts/reset_password_email.html', {
                 'user': user,
                 'domain': current_site,
@@ -143,7 +198,6 @@ def resetPassword(request):
     if request.method == 'POST':
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
-
         if password == confirm_password:
             uid = request.session.get('uid')
             user = Account.objects.get(pk=uid)

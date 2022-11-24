@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+from django.contrib.messages import constants as messages
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,11 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'category', #category app
-    'accounts', #accounts app
-    'store', #store app
-    'carts', #carts app
-    'orders', #orders app 
+    'category',  # category app
+    'accounts',  # accounts app
+    'store',  # store app
+    'carts',  # carts app
+    'orders',  # orders app
 ]
 
 MIDDLEWARE = [
@@ -59,7 +60,7 @@ ROOT_URLCONF = 'shopmate.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'], #from out folder name: templates
+        'DIRS': ['templates'],  # from out folder name: templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,7 +68,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'category.context_processors.menu_links', #our context_processor.py in order to use our menu links
+                # our context_processor.py in order to use our menu links
+                'category.context_processors.menu_links',
                 'carts.context_processors.counter',
             ],
         },
@@ -75,10 +77,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'shopmate.wsgi.application'
-#use custom user models
+# use custom user models
 AUTH_USER_MODEL = 'accounts.Account'
-#accounts is the app name
-#Account is the model name
+# accounts is the app name
+# Account is the model name
 
 
 # Database
@@ -129,23 +131,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR /'static'
+STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = [
     'shopmate/static'
 ]
 
-#media files configuration
+# media files configuration
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR /'media'
+MEDIA_ROOT = BASE_DIR / 'media'
 
-from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
-#SMTP configuration
+# SMTP configuration
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587 #For gmail only
-EMAIL_HOST_USER = 'ratanakvesalthong@gmail.com'
-EMAIL_HOST_PASSWORD = 'ratanakvesal01072003'
+EMAIL_PORT = 587  # For gmail only
+EMAIL_HOST_USER = 'besdong.komsot111@gmail.com'
+EMAIL_HOST_PASSWORD = 'Dummyaccount111'
 EMAIL_USE_TLS = True

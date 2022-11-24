@@ -4,6 +4,7 @@ from .models import Account, UserProfile
 from orders.models import Order, OrderProduct
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 # Verification email
 from django.contrib.sites.shortcuts import get_current_site
@@ -166,7 +167,7 @@ def dashboard(request):
         'orders_count': orders_count,
         'userprofile': userprofile,
     }
-    return render(request, 'accounts/dashboard.html',)  # context)
+    return render(request, 'accounts/dashboard.html', context)
 
 
 def forgotPassword(request):
@@ -243,16 +244,15 @@ def my_orders(request):
 
 @login_required(login_url='login')
 def edit_profile(request):
-    if request.method == 'POST':
-        userprofile = get_object_or_404(UserProfile, user=request.user)
 
+    userprofile = get_object_or_404(UserProfile, user=request.user)
+    if request.method == 'POST':
         # use the instance to update the profile
         user_form = UserForm(request.POST, instance=request.user)
 
         # pass the request to file in order to update the profile
         profile_form = UserProfileForm(
             request.POST, request.FILES, instance=userprofile)
-
         # check if the form is valid and then save
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
@@ -261,16 +261,16 @@ def edit_profile(request):
             return redirect('edit_profile')
 
         # if the form is invalid then the form will be rerender
-        else:
-            user_form = UserForm(instance=request.user)
-            profile_form = UserProfileForm(instance=userprofile)
-        context = {
-            'user_form': user_form,
-            'profile_form': profile_form,
-            'user_profile': user_profile,
-        }
+    else:
+        user_form = UserForm(instance=request.user)
+        profile_form = UserProfileForm(instance=userprofile)
 
-    return render(request, 'accounts/edits_profile.html', context)
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'userprofile': userprofile,
+    }
+    return render(request, 'accounts/edit_profile.html', context)
 
 
 @login_required(login_url='login')

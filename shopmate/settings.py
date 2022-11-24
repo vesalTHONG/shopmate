@@ -148,5 +148,5 @@ MESSAGE_TAGS = {
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # For gmail only
 EMAIL_HOST_USER = 'besdong.komsot111@gmail.com'
-EMAIL_HOST_PASSWORD = 'Dummyaccount111'
+EMAIL_HOST_PASSWORD = 'eokzrfyeixuqkqgp'
 EMAIL_USE_TLS = True

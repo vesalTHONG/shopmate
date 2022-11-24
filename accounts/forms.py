@@ -49,7 +49,7 @@ class UserForm(forms.ModelForm):
 
 class UserProfileForm(forms.ModelForm):
     profile_picture = forms.ImageField(required=False, error_messages={
-                                       'Invalid': ("Image files only")}, widget=forms.FileInput)
+                                       'invalid': ("Image files only")}, widget=forms.FileInput)
 
     class Meta:
         model = UserProfile
@@ -57,6 +57,6 @@ class UserProfileForm(forms.ModelForm):
                   'state', 'country', 'profile_picture')
 
     def __init__(self, *args, **kwargs):
-        super(UserForm, self).__init__(*args, **kwargs)
+        super(UserProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'

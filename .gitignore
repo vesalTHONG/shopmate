@@ -177,3 +177,8 @@ Sign in to access your highlights
 Login / Signup
 weava logo
 Drop here!
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

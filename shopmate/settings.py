@@ -29,7 +29,6 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = ['cloudProj-env.eba-cfkh29qf.us-west-2.elasticbeanstalk.com']
 
-
 # Application definition
 
 INSTALLED_APPS = [

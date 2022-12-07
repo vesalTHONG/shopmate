@@ -8,6 +8,7 @@ def home(request):  # function called home that take in request
         'created_date')  # only bring the products that are available
 
     # Get the reviews
+    reviews = None
     for product in products:
         reviews = ReviewRating.objects.filter(
             product_id=product.id, status=True)
